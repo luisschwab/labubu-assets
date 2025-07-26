@@ -4,8 +4,10 @@ use dioxus::prelude::*;
 
 use views::{Home, Navbar};
 
-mod components;
-mod views;
+pub(crate) mod components;
+pub(crate) mod error;
+pub(crate) mod esplora;
+pub(crate) mod views;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
