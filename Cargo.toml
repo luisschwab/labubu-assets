@@ -7,7 +7,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bitcoin = "0.32.6"
 dioxus = { version = "0.6.0", features = ["router"] }
+esplora-client = { version = "0.12.0", features = ["tokio", "async-https-rustls"] }
+thiserror = "2.0.12"
 
 [features]
 default = ["web"]
@@ -29,3 +32,6 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
+
+[dev-dependencies]
+tokio = { version = "1.47.0", features = ["rt", "macros"] }
