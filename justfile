@@ -8,8 +8,11 @@ _default:
     @just --list
 
 build:
+    rm -rf docs
     dx bundle --platform web --release --out-dir docs
     mv docs/public/* docs
+    rmdir docs/public
+    mv CNAME docs/
 
 check:
     cargo check
