@@ -1,6 +1,8 @@
 //! Labubu Assets
 
+use base64;
 use dioxus::prelude::*;
+use secp256k1::rand::random;
 
 use views::{Home, Navbar};
 
@@ -8,6 +10,7 @@ pub(crate) mod components;
 pub(crate) mod error;
 pub(crate) mod esplora;
 pub(crate) mod labubu;
+pub(crate) mod labubu_maker;
 pub(crate) mod types;
 pub(crate) mod views;
 
@@ -29,13 +32,34 @@ enum Route {
         Home {},
 }
 
-#[component]
 fn App() -> Element {
+    // Ensure labubu_png_data_uri is imported from the correct module
+    use crate::labubu_maker::labubu_maker;
+
+    // Convert Vec<u8> to base64 data URI string if necessary
+    let mut image_uri = use_signal(|| {
+        let png_bytes = labubu_maker(0x1337);
+        format!("data:image/png;base64,{}", base64::encode(png_bytes))
+    });
+
     rsx! {
-        document::Link { rel: "icon", href: FAVICON }
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
-        document::Link { rel: "stylesheet", href: TAILWIND_CSS }
-        Router::<Route> {}
+        div { class: "flex flex-col items-center gap-4 p-4",
+            img {
+                class: "w-56 h-auto rounded-2xl shadow-lg",
+                src: "{image_uri.read()}",
+            }
+            button {
+                class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl",
+                onclick: move |_| {
+                    // pick a fresh pseudo‑random seed & update URI
+                    let seed: u64 = random();
+                    let png_bytes = labubu_maker(seed);
+                    let uri = format!("data:image/png;base64,{}", base64::encode(png_bytes));
+                    image_uri.set(uri);
+                },
+                "Generate new Labubu"
+            }
+        }
     }
 }
 
