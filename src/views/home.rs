@@ -8,7 +8,7 @@ use bitcoin::{Address, Network};
 use secp256k1::{rand::thread_rng, Keypair, SecretKey, SECP256K1};
 use web_sys::window;
 
-use crate::labubu::create_control_block_address;
+use crate::labubu::{create_control_block_address, mint};
 use crate::labubu_maker::labubu_maker;
 
 #[component]
@@ -24,6 +24,7 @@ pub fn Home() -> Element {
     let mut destination_address_input = use_signal(|| String::new());
     let mut destination_address_string = use_signal(|| "nil".to_string());
     let mut image_uri = use_signal(|| "data:image/png;base64,".to_string());
+    let mut labubu_txid = use_signal(|| "".to_string());
 
     // Load the private key from local storage.
     use_effect(move || {
@@ -140,15 +141,14 @@ pub fn Home() -> Element {
 
                     div { class: "flex flex-col items-enter gap-4 p-4",
                         img {
-                            class: "w-56 h-auto items-center gap-4 p-4",
+                            class: "w-fit items-center gap-4 p-4",
                             src: "{image_uri}",
                         }
                     }
-                
                 }
 
                 // Destination Address Section
-                div { class: "bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200",
+                div { class: "bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 mb-8 border border-orange-200",
 
                     h3 { class: "text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3",
                         "🎯 Destination Address"
@@ -181,6 +181,24 @@ pub fn Home() -> Element {
                                 .set(storage_c3.get("DestinationAddress").unwrap().unwrap());
                         },
                         "💾 Save Address"
+                    }
+                }
+            }
+
+            // Big Mint Button Section
+            div { class: "max-w-4xl mx-auto mt-12",
+                div { class: "bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200",
+                    h3 { class: "text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center gap-3",
+                        "🚀 Ready to Mint?"
+                    }
+
+                    button {
+                        class: "w-full text-6xl font-black py-8 px-12 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white rounded-3xl transition-all duration-500 transform hover:scale-105 hover:shadow-2xl shadow-xl border-4 border-white/20",
+                        onclick: move |_| {
+                            // TODO(@stutxo): make tx
+                            //let tx = mint(pubkey, amount, destination_address, fee, inputs, prev_txouts, spend_info, keypair)
+                        },
+                        "🚀 MINT LABUBU 🚀"
                     }
                 }
             }

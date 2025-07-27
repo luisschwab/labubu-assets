@@ -18,6 +18,7 @@ check:
 
 fmt:
     cargo +nightly fmt
+    dx fmt
 
 test:
     cargo test -- --nocapture
