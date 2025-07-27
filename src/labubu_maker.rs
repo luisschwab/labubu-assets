@@ -72,7 +72,5 @@ pub fn labubu_maker(seed: u64) -> Vec<u8> {
         .write_image(raw, out_w, out_h, ColorType::Rgba8.into())
         .expect("PNG encode failed");
 
-    println!("PNG output size: {} bytes", payload_bytes.len());
-
     payload_bytes
 }
