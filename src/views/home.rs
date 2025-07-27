@@ -203,8 +203,6 @@ pub fn Home() -> Element {
                     button {
                         class: "w-full text-6xl font-black py-8 px-12 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white rounded-3xl transition-all duration-500 transform hover:scale-105 hover:shadow-2xl shadow-xl border-4 border-white/20",
                         onclick: move |_| {
-                            // TODO(@stutxo): make tx
-
                             spawn(async move {
                                 let utxos = fetch_address_utxos(
                                     &ESPLORA_ENDPOINT.read(),
@@ -219,6 +217,7 @@ pub fn Home() -> Element {
                                 if utxos.is_empty() {
                                     return;
                                 }
+
                               let inputs: Vec<TxIn> = utxos
                                   .iter()
                                   .map(|utxo| TxIn {
