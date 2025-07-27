@@ -1,6 +1,7 @@
 [application]
 
 [web.app]
+base_path = "/labubu-assets/"
 
 # HTML title tag content
 title = "labubu-assets"
