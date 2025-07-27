@@ -1,10 +1,13 @@
 //! Labubu Assets
 
 use base64;
+use bitcoin::{Address, Network};
 use dioxus::prelude::*;
-use secp256k1::rand::random;
+use secp256k1::{rand::random, Keypair, Secp256k1, SecretKey};
 
 use views::{Home, Navbar};
+
+use crate::labubu::{create_control_block_address, mint};
 
 pub(crate) mod components;
 pub(crate) mod error;
@@ -51,11 +54,38 @@ fn App() -> Element {
             button {
                 class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl",
                 onclick: move |_| {
-                    // pick a fresh pseudo‑random seed & update URI
-                    let seed: u64 = random();
-                    let png_bytes = labubu_maker(seed);
-                    let uri = format!("data:image/png;base64,{}", base64::encode(png_bytes));
-                    image_uri.set(uri);
+     let secp = Secp256k1::new();
+    // pick a fresh pseudo‑random secret key & update URI
+    let mut rng = secp256k1::rand::thread_rng();
+    let secret_key = SecretKey::new(&mut rng);
+    let keypair = Keypair::from_secret_key(&secp, &secret_key);
+    let pubkey = keypair.public_key();
+    let seed: u64 = random();
+    let png_bytes = labubu_maker(seed);
+    let spend_info = create_control_block_address(pubkey.into(), png_bytes.clone())
+        .expect("Failed to create control block address");
+
+    let address = Address::p2tr_tweaked(spend_info.output_key(), Network::Signet);
+
+    println!("Labubu address {:?}", address);
+
+    let transaction = mint(
+        pubkey.into(),
+        100_000, // amount in satoshis
+        address,
+        1_000, // fee in satoshis
+        vec![], // inputs (empty for this example)
+        vec![], // previous txouts (empty for this example)
+        spend_info,
+        keypair,
+    )
+    .expect("Failed to mint Labubu asset");
+
+    //broadcast the transaction to the network
+
+
+    let uri = format!("data:image/png;base64,{}", base64::encode(png_bytes));
+    image_uri.set(uri);
                 },
                 "Generate new Labubu"
             }
