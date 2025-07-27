@@ -8,7 +8,8 @@ _default:
     @just --list
 
 build:
-    cargo build
+    dx bundle --platform web --release --out-dir docs
+    mv docs/public/* docs
 
 check:
     cargo check
