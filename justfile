@@ -12,7 +12,6 @@ build:
     dx bundle --platform web --release --out-dir docs
     mv docs/public/* docs
     rmdir docs/public
-    mv CNAME docs/
 
 check:
     cargo check
