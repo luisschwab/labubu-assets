@@ -10,7 +10,11 @@ edition = "2021"
 bitcoin = "0.32.6"
 dioxus = { version = "0.6.0", features = ["router"] }
 esplora-client = { version = "0.12.0", features = ["tokio", "async-https-rustls"] }
+reqwest = { version = "0.12.22", features = ["json"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.141"
 thiserror = "2.0.12"
+tokio = { version = "1.47.0", features = ["full"] }
 
 [features]
 default = ["web"]

@@ -12,6 +12,8 @@ use bitcoin::{Address, Amount, Transaction, Txid};
 use esplora_client::{r#async::DefaultSleeper, AsyncClient, Builder};
 
 use crate::error::LabubuError;
+use crate::types::{Utxo, UtxoStatus};
+use crate::ESPLORA_ENDPOINT;
 
 /// Fee estimates as a map of tuples of target blocks and feerate in `sat/vB`.
 pub(crate) type FeeEstimate = HashMap<u16, f64>;
@@ -37,6 +39,22 @@ pub(crate) async fn fetch_address_balance(
     let balance = response.chain_stats.funded_txo_sum - response.chain_stats.spent_txo_sum;
 
     Ok(Amount::from_sat(balance))
+}
+
+/// Fetch an [`Address`]es [`Utxo`]s.
+///
+/// Esplora's spec has no endpoint for this, so we just make a GET
+/// request directly to the mempool.space API. Note: if you use another
+/// non-mempool endpoint, this will break Labubu Assets.
+pub(crate) async fn fetch_address_utxos(
+    esplora_endpoint: &String,
+    address: &Address,
+) -> Result<Vec<Utxo>, LabubuError> {
+    let url = format!("{}/address/{}/utxo", esplora_endpoint, address.to_string());
+    let response = reqwest::get(url).await?.text().await?;
+    let utxos: Vec<Utxo> = serde_json::from_str(&response)?;
+
+    Ok(utxos)
 }
 
 /// Broadcast a [`Transaction`] using the Esplora client.
@@ -78,5 +96,14 @@ mod tests {
             .await
             .unwrap();
         assert!(balance > Amount::from_sat(0));
+    }
+
+    #[tokio::test]
+    async fn address_utxos() {
+        let utxos: Vec<Utxo> = fetch_address_utxos(&SIGNET_URL.to_string(), &SIGNET_ADDRESS)
+            .await
+            .unwrap();
+        println!("{:?}", utxos);
+        assert!(utxos.len() > 0);
     }
 }
