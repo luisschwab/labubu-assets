@@ -28,8 +28,6 @@ wasm-bindgen-futures = "0.4.50"
 hex = "0.4"
 image = "0.25"
 palette = "0.7.6"
-imagequant = "4" 
-png        = "0.17"
 base64 = "0.22.1"
 
 [features]

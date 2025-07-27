@@ -2,9 +2,7 @@ use std::io::Cursor;
 
 use hex::decode;
 use image::ImageEncoder;
-use image::{
-    codecs::png::PngEncoder, imageops::FilterType, ColorType, ImageBuffer, ImageReader, Rgba,
-};
+use image::{codecs::png::PngEncoder, ColorType, ImageBuffer, ImageReader, Rgba};
 use palette::{FromColor, Hsl, Srgb};
 use secp256k1::rand::{self, distributions::Uniform, rngs::StdRng, Rng, SeedableRng};
 
