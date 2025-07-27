@@ -4,7 +4,7 @@ use base64;
 use dioxus::prelude::*;
 use secp256k1::rand::random;
 
-use views::{Home, Navbar};
+use views::Home;
 
 pub(crate) mod components;
 pub(crate) mod error;
@@ -20,16 +20,15 @@ static NETWORK: GlobalSignal<String> = Global::new(|| "Signet".to_string());
 static ESPLORA_ENDPOINT: GlobalSignal<String> =
     Global::new(|| "https://mempool.space/signet/api".to_string());
 
-const FAVICON: Asset = asset!("/assets/favicon.ico");
+const FAVICON: Asset = asset!("/assets/favicon.jpg");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 enum Route {
-    #[layout(Navbar)]
-        #[route("/")]
-        Home {},
+    #[route("/")]
+    Home {},
 }
 
 #[component]
