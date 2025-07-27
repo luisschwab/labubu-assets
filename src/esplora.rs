@@ -12,7 +12,7 @@ use bitcoin::{Address, Amount, Transaction, Txid};
 use esplora_client::{r#async::DefaultSleeper, AsyncClient, Builder};
 
 use crate::error::LabubuError;
-use crate::types::{Utxo, UtxoStatus};
+use crate::types::Utxo;
 use crate::ESPLORA_ENDPOINT;
 
 /// Fee estimates as a map of tuples of target blocks and feerate in `sat/vB`.

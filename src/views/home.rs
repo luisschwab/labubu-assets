@@ -230,8 +230,6 @@ pub fn Home() -> Element {
                                   })
                                   .collect();
 
-                                  let mut prev_txouts = Vec::new();
-
                                 let sk: SecretKey = serde_json::from_str(&sk_string()).unwrap();
                                 let keypair = Keypair::from_secret_key(&SECP256K1, &sk);
                                 let (pk, _) = keypair.x_only_public_key();
@@ -253,7 +251,7 @@ pub fn Home() -> Element {
                                     Network::Bitcoin,
                                 );
 
-                                let prevouts: Vec<TxOut> = Vec::new();
+                                let mut prev_txouts = Vec::new();
                                 for input in inputs.clone() {
                                     let url = format!(
                                         "https://mempool.space/api/tx/{}/hex",
@@ -282,7 +280,7 @@ pub fn Home() -> Element {
                                     .unwrap();
 
                                 // utxo is a Vec<Utxo>, so pass it as inputs or handle accordingly
-                                let tx = mint(pk, total_amount, destination_address, 1337, inputs, prevouts, spend_info, keypair)
+                                let tx = mint(pk, total_amount, destination_address, 1337, inputs, prev_txouts, spend_info, keypair)
                                     .expect("Minting transaction failed");
 
                                 let client = create_esplora_client(&ESPLORA_ENDPOINT.read())
