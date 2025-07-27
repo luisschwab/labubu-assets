@@ -13,7 +13,6 @@ pub fn labubu_maker(seed: u64) -> Vec<u8> {
 
     let png_bytes = decode(genesis_labubu.trim()).expect("hex decode failed");
 
-    let tile_px: u32 = 12;
     let rng_seed: Option<u64> = Some(seed);
 
     let img = ImageReader::new(Cursor::new(png_bytes))
@@ -23,21 +22,16 @@ pub fn labubu_maker(seed: u64) -> Vec<u8> {
         .expect("PNG decode failed")
         .to_rgba8();
 
-    let (w, h) = img.dimensions();
-    let grid_w = (w as f32 / tile_px as f32).round() as u32;
-    let grid_h = (h as f32 / tile_px as f32).round() as u32;
-    let flat = image::imageops::resize(&img, grid_w, grid_h, FilterType::Nearest);
-
     let mut rng: StdRng = rng_seed
         .map(StdRng::seed_from_u64)
         .unwrap_or_else(|| StdRng::from_seed(rand::random()));
     let new_hue: f32 = rng.sample(Uniform::new(0.0, 360.0));
 
-    let (out_w, out_h) = flat.dimensions();
+    let (out_w, out_h) = img.dimensions();
     let mut out: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(out_w, out_h);
     for y in 0..out_h {
         for x in 0..out_w {
-            let p = flat.get_pixel(x, y);
+            let p = img.get_pixel(x, y);
             let a = p[3];
             if a == 0 {
                 out.put_pixel(x, y, Rgba([0, 0, 0, 0]));
@@ -79,6 +73,8 @@ pub fn labubu_maker(seed: u64) -> Vec<u8> {
     PngEncoder::new(&mut payload_bytes)
         .write_image(raw, out_w, out_h, ColorType::Rgba8.into())
         .expect("PNG encode failed");
+
+    println!("PNG output size: {} bytes", payload_bytes.len());
 
     payload_bytes
 }
