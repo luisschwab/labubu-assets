@@ -8,6 +8,9 @@ _default:
     @just --list
 
 build:
+    export CFLAGS="-I/opt/homebrew/include"
+    export LDFLAGS="-L/opt/homebrew/lib"
+    export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
     rm -rf docs
     dx bundle --platform web --release --out-dir docs
     mv docs/public/* docs

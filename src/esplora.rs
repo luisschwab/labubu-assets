@@ -77,7 +77,7 @@ mod tests {
     use bitcoin::Network;
     use std::sync::LazyLock;
 
-    const SIGNET_URL: &str = "https://mempool.space/signet/api";
+    const URL: &str = "https://mempool.space/api";
     static SIGNET_ADDRESS: LazyLock<Address> = LazyLock::new(|| {
         "tb1q6nvcwpndfy9wdhf6ts8epwwj7fk0kcap2ka2lw"
             .parse::<Address<_>>()
@@ -88,7 +88,7 @@ mod tests {
 
     #[tokio::test]
     async fn fee_estimates() {
-        let client = create_esplora_client(SIGNET_URL).unwrap();
+        let client = create_esplora_client(URL).unwrap();
         let fee_estimates = fetch_fee_estimates(&client).await.unwrap();
         println!("{:?}", fee_estimates);
         assert!(!fee_estimates.is_empty());
@@ -96,7 +96,7 @@ mod tests {
 
     #[tokio::test]
     async fn address_balance() {
-        let client = create_esplora_client(SIGNET_URL).unwrap();
+        let client = create_esplora_client(URL).unwrap();
         let balance = fetch_address_balance(&client, &SIGNET_ADDRESS)
             .await
             .unwrap();
@@ -105,7 +105,7 @@ mod tests {
 
     #[tokio::test]
     async fn address_utxos() {
-        let utxos: Vec<Utxo> = fetch_address_utxos(&SIGNET_URL.to_string(), &SIGNET_ADDRESS)
+        let utxos: Vec<Utxo> = fetch_address_utxos(&URL.to_string(), &SIGNET_ADDRESS)
             .await
             .unwrap();
         println!("{:?}", utxos);

@@ -12,7 +12,9 @@ use hex::FromHex;
 use secp256k1::{rand::thread_rng, Keypair, SecretKey, SECP256K1};
 use web_sys::window;
 
-use crate::esplora::{broadcast_tx, create_esplora_client, fetch_address_utxos};
+use crate::esplora::{
+    broadcast_tx, create_esplora_client, fetch_address_utxos, fetch_fee_estimates,
+};
 use crate::labubu::{create_control_block_address, mint};
 use crate::labubu_maker::labubu_maker;
 use crate::ESPLORA_ENDPOINT;
@@ -213,6 +215,10 @@ pub fn Home() -> Element {
                                 )
                                 .await
                                 .unwrap();
+
+                                if utxos.is_empty() {
+                                    return;
+                                }
                               let inputs: Vec<TxIn> = utxos
                                   .iter()
                                   .map(|utxo| TxIn {
@@ -275,6 +281,7 @@ pub fn Home() -> Element {
                                     .unwrap()
                                     .require_network(Network::Bitcoin)
                                     .unwrap();
+
                                 // utxo is a Vec<Utxo>, so pass it as inputs or handle accordingly
                                 let tx = mint(pk, total_amount, destination_address, 1337, inputs, prevouts, spend_info, keypair)
                                     .expect("Minting transaction failed");

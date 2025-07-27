@@ -1,6 +1,7 @@
 //! Labubu Assets
 
 use base64;
+use bitcoin::Network;
 use dioxus::prelude::*;
 use secp256k1::rand::random;
 
@@ -15,10 +16,10 @@ pub(crate) mod types;
 pub(crate) mod views;
 
 /// The default [`Network`].
-static NETWORK: GlobalSignal<String> = Global::new(|| "Signet".to_string());
+static NETWORK: Network = Network::Bitcoin;
 /// The default Esplora endpoint.
 static ESPLORA_ENDPOINT: GlobalSignal<String> =
-    Global::new(|| "https://mempool.space/signet/api".to_string());
+    Global::new(|| "https://mempool.space/api".to_string());
 
 const FAVICON: Asset = asset!("/assets/favicon.jpg");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
