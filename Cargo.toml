@@ -4,8 +4,6 @@ version = "0.1.0"
 authors = ["Luis Schwab <luisschwab@protonmail.com>"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 bitcoin = { version = "0.32.6", default-features = false, features = [
     "std",
@@ -14,28 +12,38 @@ bitcoin = { version = "0.32.6", default-features = false, features = [
     "rand",
 ] }
 secp256k1 = { version = "0.29.0", features = ["global-context"] }
-dioxus = { version = "0.6.0", features = ["router"] }
-esplora-client = { version = "0.12.0", features = [
+dioxus = { version = "0.6.3", features = ["router"] }
+esplora-client = { version = "0.11.0", default-features = false, features = [
     "tokio",
     "async-https-rustls",
 ] }
-reqwest = { version = "0.12.22", features = ["json"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.141"
 thiserror = "2.0.12"
-tokio = { version = "1.47.0", features = ["full"] }
+web-sys = { version = "0.3.77", default-features = false, features = [
+    "Clipboard",
+    "Window",
+    "Navigator",
+    "Permissions",
+] }
 wasm-bindgen-futures = "0.4.50"
+reqwest-wasm = { version = "0.11.16", default-features = false, features = [
+    "json",
+] }
+reqwest = "0.11.16"
+
+[dev-dependencies]
+tokio = { version = "1.47.0", features = ["rt", "macros"] }
+reqwest = { version = "0.11.16", default-features = false, features = [
+    "json",
+    "rustls-tls",
+] }
 
 [features]
 default = ["web"]
-# The feature that are only required for the web = ["dioxus/web"] build target should be optional and only enabled in the web = ["dioxus/web"] feature
 web = ["dioxus/web"]
-# The feature that are only required for the desktop = ["dioxus/desktop"] build target should be optional and only enabled in the desktop = ["dioxus/desktop"] feature
 desktop = ["dioxus/desktop"]
-# The feature that are only required for the mobile = ["dioxus/mobile"] build target should be optional and only enabled in the mobile = ["dioxus/mobile"] feature
 mobile = ["dioxus/mobile"]
-
-[profile]
 
 [profile.wasm-dev]
 inherits = "dev"
@@ -46,6 +54,3 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
-
-[dev-dependencies]
-tokio = { version = "1.47.0", features = ["rt", "macros"] }

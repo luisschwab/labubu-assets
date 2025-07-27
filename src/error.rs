@@ -19,6 +19,9 @@ pub(crate) enum LabubuError {
     #[error("Reqwest error: {0}")]
     Reqwest(#[from] reqwest::Error),
 
+    #[error("Reqwest WASM error: {0}")]
+    ReqwestWasm(#[from] reqwest_wasm::Error),
+
     #[error("Serde error: {0}")]
     Serde(#[from] serde_json::Error),
 }

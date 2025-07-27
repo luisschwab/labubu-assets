@@ -51,7 +51,12 @@ pub(crate) async fn fetch_address_utxos(
     address: &Address,
 ) -> Result<Vec<Utxo>, LabubuError> {
     let url = format!("{}/address/{}/utxo", esplora_endpoint, address.to_string());
+
+    #[cfg(target_arch = "wasm32")]
+    let response = reqwest_wasm::get(url).await?.text().await?;
+    #[cfg(not(target_arch = "wasm32"))]
     let response = reqwest::get(url).await?.text().await?;
+
     let utxos: Vec<Utxo> = serde_json::from_str(&response)?;
 
     Ok(utxos)

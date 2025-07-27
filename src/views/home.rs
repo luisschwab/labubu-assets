@@ -1,4 +1,6 @@
 //! Labubu Assets
+//!
+//! Home page
 
 use dioxus::prelude::*;
 
