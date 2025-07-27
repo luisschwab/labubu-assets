@@ -1,5 +1,6 @@
 alias b := build
 alias c := check
+alias f := fmt
 alias t := test
 alias s := serve
 
@@ -11,6 +12,9 @@ build:
 
 check:
     cargo check
+
+fmt:
+    cargo +nightly fmt
 
 test:
     cargo test -- --nocapture
