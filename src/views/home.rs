@@ -2,14 +2,20 @@
 //!
 //! Labubu Assets home page.
 
+use std::str::FromStr;
+
 use dioxus::prelude::*;
 
-use bitcoin::{Address, Network};
+use bitcoin::{Address, Amount, Network, OutPoint, Sequence, Transaction, TxIn, TxOut, Txid};
+use esplora_client::{deserialize, AsyncClient};
+use hex::FromHex;
 use secp256k1::{rand::thread_rng, Keypair, SecretKey, SECP256K1};
 use web_sys::window;
 
+use crate::esplora::{broadcast_tx, create_esplora_client, fetch_address_utxos};
 use crate::labubu::{create_control_block_address, mint};
 use crate::labubu_maker::labubu_maker;
+use crate::ESPLORA_ENDPOINT;
 
 #[component]
 pub fn Home() -> Element {
@@ -196,7 +202,87 @@ pub fn Home() -> Element {
                         class: "w-full text-6xl font-black py-8 px-12 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white rounded-3xl transition-all duration-500 transform hover:scale-105 hover:shadow-2xl shadow-xl border-4 border-white/20",
                         onclick: move |_| {
                             // TODO(@stutxo): make tx
-                            //let tx = mint(pubkey, amount, destination_address, fee, inputs, prev_txouts, spend_info, keypair)
+
+                            spawn(async move {
+                                let utxos = fetch_address_utxos(
+                                    &ESPLORA_ENDPOINT.read(),
+                                    &Address::from_str(&deposit_address_string())
+                                        .unwrap()
+                                        .require_network(Network::Bitcoin)
+                                        .unwrap(),
+                                )
+                                .await
+                                .unwrap();
+                              let inputs: Vec<TxIn> = utxos
+                                  .iter()
+                                  .map(|utxo| TxIn {
+                                      previous_output: OutPoint::new(
+                                          utxo.txid.clone(),
+                                          utxo.vout,
+                                      ),
+                                      sequence: Sequence::ENABLE_RBF_NO_LOCKTIME,
+                                      ..Default::default()
+                                  })
+                                  .collect();
+
+                                  let mut prev_txouts = Vec::new();
+
+                                let sk: SecretKey = serde_json::from_str(&sk_string()).unwrap();
+                                let keypair = Keypair::from_secret_key(&SECP256K1, &sk);
+                                let (pk, _) = keypair.x_only_public_key();
+                                let pk_ser = pk.serialize();
+                                let seed = u64::from_be_bytes([
+                                    pk_ser[0],
+                                    pk_ser[1],
+                                    pk_ser[2],
+                                    pk_ser[3],
+                                    pk_ser[4],
+                                    pk_ser[5],
+                                    pk_ser[6],
+                                    pk_ser[7],
+                                ]);
+                                let payload = labubu_maker(seed);
+                                let spend_info = create_control_block_address(pk, payload.clone()).unwrap();
+                                let address = Address::p2tr_tweaked(
+                                    spend_info.output_key(),
+                                    Network::Bitcoin,
+                                );
+
+                                let prevouts: Vec<TxOut> = Vec::new();
+                                for input in inputs.clone() {
+                                    let url = format!(
+                                        "https://mempool.space/api/tx/{}/hex",
+                                        input.previous_output.txid
+                                    );
+                                    let response = reqwest::get(&url).await.unwrap().text().await.unwrap();
+                                    let tx: Transaction = deserialize(&Vec::<u8>::from_hex(&response).unwrap()).unwrap();
+
+                                    let mut outpoint: Option<OutPoint> = None;
+                                    for (i, out) in tx.output.iter().enumerate() {
+                                        if address.script_pubkey() == out.script_pubkey {
+                                            outpoint = Some(OutPoint::new(tx.compute_txid(), i as u32));
+                                            break;
+                                        }
+                                    }
+                                    let prevout = outpoint.expect("Outpoint must exist in tx");
+                                    prev_txouts.push(tx.output[prevout.vout as usize].clone());
+                                }
+
+                                let total_amount = utxos.iter().map(|utxo| utxo.value.to_sat()).sum::<u64>();
+
+
+                                let destination_address = Address::from_str(&destination_address_string())
+                                    .unwrap()
+                                    .require_network(Network::Bitcoin)
+                                    .unwrap();
+                                // utxo is a Vec<Utxo>, so pass it as inputs or handle accordingly
+                                let tx = mint(pk, total_amount, destination_address, 1337, inputs, prevouts, spend_info, keypair)
+                                    .expect("Minting transaction failed");
+
+                                let client = create_esplora_client(&ESPLORA_ENDPOINT.read())
+                                    .expect("Failed to create Esplora client");
+                                broadcast_tx(&client, &tx).await.expect("Broadcast failed");
+                            });
                         },
                         "🚀 MINT LABUBU 🚀"
                     }
