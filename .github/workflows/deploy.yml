@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Rust
@@ -19,19 +19,24 @@ jobs:
         with:
           toolchain: stable
           override: true
+          components: rust-src
 
-      - name: Install Dioxus CLI
-        run: cargo install dioxus-cli --locked
+      - name: Add wasm32 target
+        run: rustup target add wasm32-unknown-unknown
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libssl-dev
+          sudo apt-get install -y clang lld build-essential pkg-config libssl-dev
 
-      - name: Build application
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli --locked
+
+      - name: Build application with Dioxus
+        env:
+          CC: clang
+          CFLAGS: "--target=wasm32-unknown-unknown"
         run: |
-          export CFLAGS="-I/usr/include"
-          export LDFLAGS="-L/usr/lib"
           rm -rf docs
           dx bundle --platform web --release --out-dir docs
           mv docs/public/* docs
