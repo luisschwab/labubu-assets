@@ -40,3 +40,35 @@ To run for a different platform, use the `--platform platform` flag. E.g.
 dx serve --platform desktop
 ```
 
+## Deployment
+
+### GitHub Pages
+
+This project is configured for automatic deployment to GitHub Pages. The deployment process is handled by GitHub Actions.
+
+#### Setup
+
+1. **Enable GitHub Pages**: Go to your repository settings → Pages → Source → Select "Deploy from a branch" → Choose "gh-pages" branch → Save
+
+2. **Push to main branch**: The GitHub Actions workflow will automatically:
+   - Build your Dioxus application
+   - Deploy it to the `gh-pages` branch
+   - Make it available at `https://yourusername.github.io/your-repo-name`
+
+#### Manual Build
+
+To build locally for deployment:
+
+```bash
+just build
+```
+
+This will create a `docs` directory with the built application ready for deployment.
+
+#### Custom Domain (Optional)
+
+If you want to use a custom domain:
+1. Add your domain to the GitHub Pages settings
+2. Create a `CNAME` file in the `docs` directory with your domain name
+3. The workflow will automatically include this file in the deployment
+
