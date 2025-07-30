@@ -9,38 +9,38 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Setup Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
-        
-    - name: Install Dioxus CLI
-      run: cargo install dioxus-cli --locked
-      
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential pkg-config libssl-dev
-        
-    - name: Build application
-      run: |
-        export CFLAGS="-I/usr/include"
-        export LDFLAGS="-L/usr/lib"
-        rm -rf docs
-        dx bundle --platform web --release --out-dir docs
-        mv docs/public/* docs
-        rmdir docs/public
-        
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
-        force_orphan: true 
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli --locked
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libssl-dev
+
+      - name: Build application
+        run: |
+          export CFLAGS="-I/usr/include"
+          export LDFLAGS="-L/usr/lib"
+          rm -rf docs
+          dx bundle --platform web --release --out-dir docs
+          mv docs/public/* docs
+          rmdir docs/public
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          force_orphan: true
