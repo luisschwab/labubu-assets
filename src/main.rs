@@ -5,7 +5,7 @@ use bitcoin::Network;
 use dioxus::prelude::*;
 use secp256k1::rand::random;
 
-use views::Home;
+use views::{Home, HexConverter};
 
 pub(crate) mod components;
 pub(crate) mod error;
@@ -30,6 +30,8 @@ const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 enum Route {
     #[route("/")]
     Home {},
+    #[route("/converter")]
+    HexConverter {},
 }
 
 #[component]

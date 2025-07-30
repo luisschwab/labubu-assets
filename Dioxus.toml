@@ -1,7 +1,7 @@
 [application]
 
 [web.app]
-base_path = "/labubu-assets/"
+base_path = "/"
 
 # HTML title tag content
 title = "labubu-assets"
@@ -14,6 +14,9 @@ style = []
 
 # Additional JavaScript files
 script = []
+
+# Static assets
+assets = ["assets/*"]
 
 [web.resource.dev]
 

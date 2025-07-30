@@ -1,37 +1,107 @@
 body {
-    background-color: #0f1116;
-    color: #ffffff;
-    font-family: monospace;
-    font-size: 15px;
-    margin-left: 25%;
-    margin-right: 25%;
-    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    background: linear-gradient(90deg, #00c3ff 0%, #ffff1c 100%);
+    color: #000080;
+    margin: 0;
+    padding: 0;
 }
 
-#links {
-    width: 400px;
-    text-align: left;
-    font-size: x-large;
-    color: white;
-    display: flex;
-    flex-direction: column;
+h1, h2, h3 {
+    font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+    text-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;
+    letter-spacing: 2px;
 }
 
-#links a {
-    color: white;
-    text-decoration: none;
-    margin-top: 20px;
-    margin: 10px 0px;
-    border: white 1px solid;
-    border-radius: 5px;
-    padding: 10px;
+.container {
+    width: 90vw;
+    max-width: 900px;
+    margin: 30px auto;
+    background: #fffbe0;
+    border: 4px double #000080;
+    box-shadow: 0 0 20px #00c3ff, 0 0 10px #ffff1c;
+    padding: 24px;
 }
 
-#links a:hover {
-    background-color: #1f1f1f;
+button, input[type="button"], input[type="submit"] {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-size: 1.2em;
+    background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+    border: 3px outset #000080;
+    color: #000080;
+    padding: 10px 24px;
+    margin: 8px 0;
     cursor: pointer;
+    box-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+button:hover {
+    background: linear-gradient(90deg, #ffcc33 0%, #ffb347 100%);
+    box-shadow: 2px 2px 0 #000, 4px 4px 0 #fff;
 }
 
-#header {
-    max-width: 1200px;
+input, textarea {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1em;
+    border: 2px inset #000080;
+    background: #e0e0ff;
+    color: #000080;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+img {
+    border: 4px ridge #000080;
+    background: #fff;
+    image-rendering: pixelated;
+    margin: 12px 0;
+}
+
+a {
+    color: #0000ee;
+    text-decoration: underline;
+    font-weight: bold;
+}
+a:hover {
+    color: #ff0000;
+    background: #ffff1c;
+}
+
+hr {
+    border: 0;
+    border-top: 3px double #000080;
+    margin: 24px 0;
+}
+
+.marquee {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    color: #fff;
+    background: #000080;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-size: 1.2em;
+    padding: 6px 0;
+    margin-bottom: 16px;
+}
+
+.table-retro {
+    width: 100%;
+    border-collapse: collapse;
+    background: #e0e0ff;
+    border: 3px groove #000080;
+}
+.table-retro th, .table-retro td {
+    border: 2px solid #000080;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background: #ffcc33;
+}
+::-webkit-scrollbar-thumb {
+    background: #000080;
+    border-radius: 6px;
 }
